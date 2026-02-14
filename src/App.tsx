@@ -119,9 +119,9 @@ function App() {
     );
 
     return (
-        <div className="app-layout" style={{ flexDirection: 'column' }}>
+        <div className="flex h-screen w-screen bg-bg-primary flex-col overflow-hidden text-text-primary font-sans antialiased">
             <TitleBar />
-            <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+            <div className="flex flex-1 overflow-hidden">
                 <Sidebar
                     diagramType={diagramType}
                     onDiagramTypeChange={setDiagramType}
@@ -131,7 +131,7 @@ function App() {
                     onSave={handleSave}
                     onLoad={handleLoad}
                 />
-                <div className="main-area">
+                <div className="flex-1 flex flex-col overflow-hidden relative">
                     <Toolbar
                         title={diagramTitle}
                         onTitleChange={setDiagramTitle}

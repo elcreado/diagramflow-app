@@ -16,7 +16,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import ConceptNode from '../nodes/ConceptNode';
 import MindMapNode from '../nodes/MindMapNode';
-import '../nodes/nodeStyles.css';
+
 import { Network } from 'lucide-react';
 
 const nodeTypes = {
@@ -68,14 +68,14 @@ export default function DiagramCanvas({
     );
 
     return (
-        <div className="canvas-wrapper" ref={reactFlowWrapper}>
+        <div className="flex-1 relative overflow-hidden h-full w-full" ref={reactFlowWrapper}>
             {nodes.length === 0 && (
-                <div className="empty-state">
-                    <div className="empty-state-icon">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none z-10">
+                    <div className="w-16 h-16 mx-auto mb-4 text-text-muted opacity-40">
                         <Network size={64} />
                     </div>
-                    <h3>Comienza tu diagrama</h3>
-                    <p>Arrastra un elemento desde la barra lateral o haz clic en "+" para comenzar</p>
+                    <h3 className="text-lg font-semibold text-text-muted mb-1.5">Comienza tu diagrama</h3>
+                    <p className="text-[13px] text-text-muted opacity-70">Arrastra un elemento desde la barra lateral o haz clic en "+" para comenzar</p>
                 </div>
             )}
             <ReactFlow
@@ -111,6 +111,7 @@ export default function DiagramCanvas({
                     showZoom={false}
                     showFitView={false}
                     showInteractive={false}
+                    className="!bg-bg-secondary !border-border !rounded-md !shadow-md overflow-hidden [&>button]:!bg-bg-secondary [&>button]:!border-none [&>button]:!border-b [&>button]:!border-border [&>button]:!text-text-secondary [&>button]:!fill-text-secondary hover:[&>button]:!bg-bg-hover"
                 />
                 <MiniMap
                     nodeStrokeWidth={3}
@@ -119,8 +120,9 @@ export default function DiagramCanvas({
                         width: 160,
                         height: 100,
                     }}
-                    maskColor="rgba(15, 15, 20, 0.7)"
+                    maskColor="rgba(22, 22, 30, 0.7)"
                     nodeColor={() => '#7c3aed'}
+                    className="!bg-bg-secondary !border-border !rounded-md overflow-hidden"
                 />
             </ReactFlow>
         </div>

@@ -21,12 +21,21 @@ function MindMapNode({ id, data, selected }: NodeProps) {
 
     return (
         <div
-            className={`custom-node mindmap-node ${variant} ${selected ? 'selected' : ''}`}
+            className={`rounded-xl border-[1.5px] min-w-[120px] max-w-[280px] transition-fast cursor-default relative
+                ${variant === 'central'
+                    ? 'bg-gradient-to-br from-accent-primary to-[#6d28d9] border-transparent shadow-glow text-white hover:shadow-[0_0_28px_var(--accent-glow-strong)]'
+                    : variant === 'branch'
+                        ? 'bg-gradient-to-br from-success/5 to-success/5 border-success/25 hover:border-success/40'
+                        : 'bg-gradient-to-br from-info/5 to-info/5 border-info/20 hover:border-info/40 min-w-[100px]'}
+                ${selected && variant !== 'central' ? (variant === 'branch' ? '!border-success shadow-[0_0_0_2px_rgba(52,211,153,0.2)]' : '!border-info shadow-[0_0_0_2px_rgba(96,165,250,0.2)]') : ''}
+                ${selected && variant === 'central' ? 'ring-2 ring-white/30' : ''}
+            `}
         >
-            <div className="node-content">
-                <Handle type="target" position={Position.Left} />
+            <div className="p-3">
+                <Handle type="target" position={Position.Left} className="!w-2 !h-2 !bg-bg-active !border-2 !border-bg-secondary hover:!bg-accent-primary hover:!scale-125 transition-fast" />
                 <textarea
-                    className="node-label"
+                    className={`text-[13px] font-medium text-center w-full bg-transparent border-none outline-none font-sans resize-none overflow-hidden leading-snug placeholder:text-text-muted block
+                        ${variant === 'central' ? 'text-white placeholder:text-white/50 text-[15px] font-semibold' : 'text-text-primary'}`}
                     value={nodeData.label || ''}
                     onChange={handleLabelChange}
                     placeholder={
@@ -44,11 +53,11 @@ function MindMapNode({ id, data, selected }: NodeProps) {
                     }}
                 />
                 {nodeData.image && (
-                    <div className="node-inline-image">
-                        <img src={nodeData.image} alt="Imagen" />
+                    <div className="w-full mt-2 rounded-sm overflow-hidden relative group">
+                        <img src={nodeData.image} alt="Imagen" className="w-full max-h-[140px] object-cover block rounded-sm" />
                     </div>
                 )}
-                <Handle type="source" position={Position.Right} />
+                <Handle type="source" position={Position.Right} className="!w-2 !h-2 !bg-bg-active !border-2 !border-bg-secondary hover:!bg-accent-primary hover:!scale-125 transition-fast" />
             </div>
         </div>
     );

@@ -49,17 +49,17 @@ export default function DiagramContextMenu({
     return (
         <div
             ref={ref}
-            className="context-menu"
+            className="fixed bg-bg-secondary border border-border rounded-md p-1 min-w-[180px] shadow-lg z-[500] animate-[fadeIn_150ms_ease]"
             style={{ left: x, top: y }}
         >
-            <button className="context-menu-item" onClick={onAddImage}>
+            <button className="flex items-center gap-2.5 px-3 py-2 rounded-sm text-[13px] text-text-secondary cursor-pointer transition-fast hover:bg-bg-hover hover:text-text-primary w-full text-left bg-transparent border-none" onClick={onAddImage}>
                 Agregar imagen
             </button>
             {hasImage && (
                 <>
-                    <div className="context-menu-divider" />
+                    <div className="h-px bg-border my-1" />
                     <button
-                        className="context-menu-item danger"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-sm text-[13px] text-error cursor-pointer transition-fast hover:bg-error/10 w-full text-left bg-transparent border-none"
                         onClick={onRemoveImage}
                     >
                         Quitar imagen

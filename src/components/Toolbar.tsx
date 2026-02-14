@@ -1,6 +1,5 @@
 import {
     Plus,
-    ImagePlus,
     Trash2,
     ZoomIn,
     ZoomOut,
@@ -11,7 +10,6 @@ type ToolbarProps = {
     title: string;
     onTitleChange: (title: string) => void;
     onAddNode: () => void;
-    onAddImage: () => void;
     onDeleteSelected: () => void;
     onZoomIn: () => void;
     onZoomOut: () => void;
@@ -24,7 +22,6 @@ export default function Toolbar({
     title,
     onTitleChange,
     onAddNode,
-    onAddImage,
     onDeleteSelected,
     onZoomIn,
     onZoomOut,
@@ -47,9 +44,6 @@ export default function Toolbar({
             <div className="toolbar-group">
                 <button className="toolbar-btn" onClick={onAddNode} title="Agregar nodo">
                     <Plus size={18} />
-                </button>
-                <button className="toolbar-btn" onClick={onAddImage} title="Agregar imagen">
-                    <ImagePlus size={18} />
                 </button>
                 <button className="toolbar-btn" onClick={onDeleteSelected} title="Eliminar seleccionado">
                     <Trash2 size={18} />

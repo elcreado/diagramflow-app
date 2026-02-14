@@ -51,31 +51,17 @@
 .concept-node {
     border-radius: var(--radius-md);
     background: linear-gradient(135deg, rgba(124, 58, 237, .08), rgba(167, 139, 250, .04));
-    border-color: rgba(124, 58, 237, .25);
+    border-color: transparent;
 }
 
 .concept-node:hover {
-    border-color: rgba(124, 58, 237, .4);
+    border-color: transparent;
     background: linear-gradient(135deg, rgba(124, 58, 237, .12), rgba(167, 139, 250, .06));
+    box-shadow: var(--shadow-md);
 }
 
 .concept-node.selected {
     border-color: var(--accent-primary);
-}
-
-.concept-node .node-header {
-    background: linear-gradient(135deg, var(--accent-primary), #6d28d9);
-    padding: 6px 14px;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    margin: -1px -1px 0 -1px;
-}
-
-.concept-node .node-header-label {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .8px;
-    color: rgba(255, 255, 255, .7);
 }
 
 /* ── Mind Map Node ── */

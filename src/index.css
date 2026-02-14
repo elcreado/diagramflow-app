@@ -123,13 +123,14 @@ body {
 /* ── Sidebar ── */
 .sidebar {
   width: var(--sidebar-width);
-  height: 100vh;
+  height: 100%;
   background: var(--bg-secondary);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   user-select: none;
   flex-shrink: 0;
+  min-height: 0;
   z-index: 10;
 }
 
@@ -172,6 +173,12 @@ body {
 .sidebar-section {
   padding: 16px 14px;
   border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-scroll-section {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .sidebar-section-title {

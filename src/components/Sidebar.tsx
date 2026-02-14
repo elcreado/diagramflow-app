@@ -4,14 +4,13 @@ import {
     BoxSelect,
     CircleDot,
     Circle,
-    ImagePlus,
     FileDown,
     FilePlus,
     Save,
     FolderOpen,
 } from 'lucide-react';
 
-export type DiagramType = 'concept' | 'mindmap';
+import { DiagramType } from '../types';
 
 type SidebarProps = {
     diagramType: DiagramType;
@@ -74,7 +73,7 @@ export default function Sidebar({
             </div>
 
             {/* Node Palette */}
-            <div className="sidebar-section" style={{ flex: 1, overflowY: 'auto' }}>
+            <div className="sidebar-section sidebar-scroll-section">
                 <div className="sidebar-section-title">Elementos</div>
                 <div className="node-palette">
                     {diagramType === 'concept' ? (
@@ -91,20 +90,6 @@ export default function Sidebar({
                                 <div>
                                     <div className="node-palette-label">Concepto</div>
                                     <div className="node-palette-desc">Nodo rectangular</div>
-                                </div>
-                            </div>
-                            <div
-                                className="node-palette-item"
-                                draggable
-                                onDragStart={(e) => onDragStart(e, 'image')}
-                                onClick={() => onAddNode('image')}
-                            >
-                                <div className="node-palette-icon image">
-                                    <ImagePlus size={16} />
-                                </div>
-                                <div>
-                                    <div className="node-palette-label">Imagen</div>
-                                    <div className="node-palette-desc">Nodo con imagen</div>
                                 </div>
                             </div>
                         </>
@@ -150,20 +135,6 @@ export default function Sidebar({
                                 <div>
                                     <div className="node-palette-label">Hoja</div>
                                     <div className="node-palette-desc">Detalle o subtema</div>
-                                </div>
-                            </div>
-                            <div
-                                className="node-palette-item"
-                                draggable
-                                onDragStart={(e) => onDragStart(e, 'image')}
-                                onClick={() => onAddNode('image')}
-                            >
-                                <div className="node-palette-icon image">
-                                    <ImagePlus size={16} />
-                                </div>
-                                <div>
-                                    <div className="node-palette-label">Imagen</div>
-                                    <div className="node-palette-desc">Nodo con imagen</div>
                                 </div>
                             </div>
                         </>

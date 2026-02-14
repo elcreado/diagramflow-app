@@ -11,18 +11,17 @@ import {
     type OnConnect,
     BackgroundVariant,
     type ReactFlowInstance,
+    type NodeMouseHandler,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import ConceptNode from '../nodes/ConceptNode';
 import MindMapNode from '../nodes/MindMapNode';
-import ImageNode from '../nodes/ImageNode';
 import '../nodes/nodeStyles.css';
 import { Network } from 'lucide-react';
 
 const nodeTypes = {
     concept: ConceptNode,
     mindmap: MindMapNode,
-    image: ImageNode,
 };
 
 type DiagramCanvasProps = {
@@ -34,6 +33,8 @@ type DiagramCanvasProps = {
     onDrop: (event: React.DragEvent) => void;
     onDragOver: (event: React.DragEvent) => void;
     onInit: (instance: ReactFlowInstance) => void;
+    onNodeContextMenu: (nodeId: string, x: number, y: number) => void;
+    onPaneClick: () => void;
 };
 
 export default function DiagramCanvas({
@@ -45,6 +46,8 @@ export default function DiagramCanvas({
     onDrop,
     onDragOver,
     onInit,
+    onNodeContextMenu,
+    onPaneClick,
 }: DiagramCanvasProps) {
     const reactFlowWrapper = useRef<HTMLDivElement>(null);
 
@@ -54,6 +57,14 @@ export default function DiagramCanvas({
             onDrop(event);
         },
         [onDrop]
+    );
+
+    const handleNodeContextMenu = useCallback<NodeMouseHandler<Node>>(
+        (event, node) => {
+            event.preventDefault();
+            onNodeContextMenu(node.id, event.clientX, event.clientY);
+        },
+        [onNodeContextMenu]
     );
 
     return (
@@ -76,6 +87,8 @@ export default function DiagramCanvas({
                 onDrop={handleDrop}
                 onDragOver={onDragOver}
                 onInit={onInit}
+                onNodeContextMenu={handleNodeContextMenu}
+                onPaneClick={onPaneClick}
                 nodeTypes={nodeTypes}
                 fitView
                 snapToGrid

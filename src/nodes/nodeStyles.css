@@ -1,0 +1,274 @@
+/* ═══════════════════════════════════════════════════════════════
+   Custom Node Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Base Node ── */
+.custom-node {
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--border-color);
+    background: var(--bg-secondary);
+    min-width: 140px;
+    max-width: 280px;
+    transition: all var(--transition-fast);
+    cursor: default;
+    position: relative;
+}
+
+.custom-node:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-md);
+}
+
+.custom-node.selected {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px var(--accent-glow), var(--shadow-glow);
+}
+
+.custom-node .node-content {
+    padding: 12px 14px;
+}
+
+.custom-node .node-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-align: center;
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.custom-node .node-label::placeholder {
+    color: var(--text-muted);
+}
+
+/* ── Concept Node ── */
+.concept-node {
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(124, 58, 237, .08), rgba(167, 139, 250, .04));
+    border-color: rgba(124, 58, 237, .25);
+}
+
+.concept-node:hover {
+    border-color: rgba(124, 58, 237, .4);
+    background: linear-gradient(135deg, rgba(124, 58, 237, .12), rgba(167, 139, 250, .06));
+}
+
+.concept-node.selected {
+    border-color: var(--accent-primary);
+}
+
+.concept-node .node-header {
+    background: linear-gradient(135deg, var(--accent-primary), #6d28d9);
+    padding: 6px 14px;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    margin: -1px -1px 0 -1px;
+}
+
+.concept-node .node-header-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: rgba(255, 255, 255, .7);
+}
+
+/* ── Mind Map Node ── */
+.mindmap-node {
+    border-radius: var(--radius-xl);
+    min-width: 120px;
+}
+
+.mindmap-node.central {
+    background: linear-gradient(135deg, var(--accent-primary), #6d28d9);
+    border-color: transparent;
+    box-shadow: var(--shadow-glow);
+}
+
+.mindmap-node.central .node-label {
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.mindmap-node.central:hover {
+    box-shadow: 0 0 28px var(--accent-glow-strong);
+}
+
+.mindmap-node.branch {
+    background: linear-gradient(135deg, rgba(52, 211, 153, .08), rgba(52, 211, 153, .03));
+    border-color: rgba(52, 211, 153, .25);
+}
+
+.mindmap-node.branch:hover {
+    border-color: rgba(52, 211, 153, .45);
+}
+
+.mindmap-node.branch.selected {
+    border-color: var(--success);
+    box-shadow: 0 0 0 2px rgba(52, 211, 153, .2), 0 0 16px rgba(52, 211, 153, .15);
+}
+
+.mindmap-node.leaf {
+    background: linear-gradient(135deg, rgba(96, 165, 250, .08), rgba(96, 165, 250, .03));
+    border-color: rgba(96, 165, 250, .2);
+    min-width: 100px;
+}
+
+.mindmap-node.leaf:hover {
+    border-color: rgba(96, 165, 250, .4);
+}
+
+.mindmap-node.leaf.selected {
+    border-color: var(--info);
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, .2), 0 0 16px rgba(96, 165, 250, .15);
+}
+
+/* ── Image Node ── */
+.image-node {
+    min-width: 160px;
+    max-width: 320px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.image-node .node-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+}
+
+.image-node .node-image {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.image-node .node-image-placeholder {
+    padding: 24px;
+    text-align: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    width: 100%;
+}
+
+.image-node .node-image-placeholder:hover {
+    color: var(--text-secondary);
+    background: var(--bg-hover);
+}
+
+.image-node .node-image-placeholder svg {
+    margin-bottom: 6px;
+}
+
+.image-node .node-image-placeholder span {
+    font-size: 11px;
+    display: block;
+}
+
+.image-node .image-remove-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .6);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.image-node:hover .image-remove-btn {
+    opacity: 1;
+}
+
+/* ── Node Image (inside any node) ── */
+.node-inline-image {
+    width: 100%;
+    margin-top: 8px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    position: relative;
+}
+
+.node-inline-image img {
+    width: 100%;
+    max-height: 140px;
+    object-fit: cover;
+    display: block;
+    border-radius: var(--radius-sm);
+}
+
+.node-inline-image .image-remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .7);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    font-size: 10px;
+}
+
+.node-inline-image:hover .image-remove-btn {
+    opacity: 1;
+}
+
+.add-image-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 6px;
+    padding: 4px 8px;
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    width: 100%;
+    font-family: inherit;
+}
+
+.add-image-btn:hover {
+    border-color: var(--border-hover);
+    color: var(--text-secondary);
+    background: var(--bg-hover);
+}
+
+/* ── Node Color Bar ── */
+.node-color-bar {
+    height: 3px;
+    width: 100%;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    margin: -1px -1px 0 -1px;
+    width: calc(100% + 2px);
+}

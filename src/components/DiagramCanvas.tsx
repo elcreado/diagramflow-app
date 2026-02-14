@@ -12,16 +12,20 @@ import {
     BackgroundVariant,
     type ReactFlowInstance,
     type NodeMouseHandler,
+    type OnConnectStart,
+    type OnConnectEnd,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import ConceptNode from '../nodes/ConceptNode';
 import MindMapNode from '../nodes/MindMapNode';
+import TitleNode from '../nodes/TitleNode';
 
 import { Network } from 'lucide-react';
 
 const nodeTypes = {
     concept: ConceptNode,
     mindmap: MindMapNode,
+    title: TitleNode,
 };
 
 type DiagramCanvasProps = {
@@ -35,6 +39,8 @@ type DiagramCanvasProps = {
     onInit: (instance: ReactFlowInstance) => void;
     onNodeContextMenu: (nodeId: string, x: number, y: number) => void;
     onPaneClick: () => void;
+    onConnectStart: OnConnectStart;
+    onConnectEnd: OnConnectEnd;
 };
 
 export default function DiagramCanvas({
@@ -48,6 +54,8 @@ export default function DiagramCanvas({
     onInit,
     onNodeContextMenu,
     onPaneClick,
+    onConnectStart,
+    onConnectEnd,
 }: DiagramCanvasProps) {
     const reactFlowWrapper = useRef<HTMLDivElement>(null);
 
@@ -89,6 +97,8 @@ export default function DiagramCanvas({
                 onInit={onInit}
                 onNodeContextMenu={handleNodeContextMenu}
                 onPaneClick={onPaneClick}
+                onConnectStart={onConnectStart}
+                onConnectEnd={onConnectEnd}
                 nodeTypes={nodeTypes}
                 fitView
                 snapToGrid
@@ -121,7 +131,7 @@ export default function DiagramCanvas({
                         height: 100,
                     }}
                     maskColor="rgba(22, 22, 30, 0.7)"
-                    nodeColor={() => '#7c3aed'}
+                    nodeColor={(node) => ((node.data as Record<string, unknown>)?.color as string) || '#7c3aed'}
                     className="!bg-bg-secondary !border-border !rounded-md overflow-hidden"
                 />
             </ReactFlow>

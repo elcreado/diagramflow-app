@@ -4,6 +4,8 @@ import {
     BoxSelect,
     CircleDot,
     Circle,
+    Link2,
+    Type,
     FileDown,
     FilePlus,
     Save,
@@ -20,6 +22,7 @@ type SidebarProps = {
     onNewDiagram: () => void;
     onSave: () => void;
     onLoad: () => void;
+    onActivateConnectTool: () => void;
 };
 
 export default function Sidebar({
@@ -30,6 +33,7 @@ export default function Sidebar({
     onNewDiagram,
     onSave,
     onLoad,
+    onActivateConnectTool,
 }: SidebarProps) {
     const onDragStart = (event: React.DragEvent, nodeType: string) => {
         event.dataTransfer.setData('application/reactflow', nodeType);
@@ -82,6 +86,34 @@ export default function Sidebar({
             <div className="px-3.5 py-4 border-b border-border flex-1 overflow-y-auto min-h-0">
                 <div className="text-[10px] font-semibold uppercase tracking-wider text-text-muted mb-2.5 px-1">Elementos</div>
                 <div className="flex flex-col gap-1">
+                    <div
+                        className="flex items-center gap-2.5 p-2.5 rounded-sm cursor-grab transition-fast border border-transparent hover:bg-bg-hover hover:border-border-hover active:cursor-grabbing active:scale-95"
+                        draggable
+                        onDragStart={(e) => onDragStart(e, 'title')}
+                        onClick={() => onAddNode('title')}
+                    >
+                        <div className="w-8 h-8 rounded-sm flex items-center justify-center shrink-0 bg-warning/20 text-warning">
+                            <Type size={16} />
+                        </div>
+                        <div>
+                            <div className="text-[13px] font-medium text-text-primary">Titulo</div>
+                            <div className="text-[11px] text-text-muted">Encabezado principal</div>
+                        </div>
+                    </div>
+                    <div
+                        className="flex items-center gap-2.5 p-2.5 rounded-sm cursor-grab transition-fast border border-transparent hover:bg-bg-hover hover:border-border-hover active:cursor-grabbing active:scale-95"
+                        draggable
+                        onDragStart={(e) => onDragStart(e, 'connection')}
+                        onClick={onActivateConnectTool}
+                    >
+                        <div className="w-8 h-8 rounded-sm flex items-center justify-center shrink-0 bg-accent-primary/15 text-accent-secondary">
+                            <Link2 size={16} />
+                        </div>
+                        <div>
+                            <div className="text-[13px] font-medium text-text-primary">Conexion</div>
+                            <div className="text-[11px] text-text-muted">Activa conexion nodo a nodo</div>
+                        </div>
+                    </div>
                     {diagramType === 'concept' ? (
                         <>
                             <div

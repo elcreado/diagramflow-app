@@ -4,8 +4,10 @@ interface DiagramContextMenuProps {
     x: number;
     y: number;
     hasImage: boolean;
+    nodeColor: string;
     onAddImage: () => void;
     onRemoveImage: () => void;
+    onChangeColor: (color: string) => void;
     onClose: () => void;
 }
 
@@ -13,8 +15,10 @@ export default function DiagramContextMenu({
     x,
     y,
     hasImage,
+    nodeColor,
     onAddImage,
     onRemoveImage,
+    onChangeColor,
     onClose,
 }: DiagramContextMenuProps) {
     const ref = useRef<HTMLDivElement>(null);
@@ -55,6 +59,16 @@ export default function DiagramContextMenu({
             <button className="flex items-center gap-2.5 px-3 py-2 rounded-sm text-[13px] text-text-secondary cursor-pointer transition-fast hover:bg-bg-hover hover:text-text-primary w-full text-left bg-transparent border-none" onClick={onAddImage}>
                 Agregar imagen
             </button>
+            <div className="h-px bg-border my-1" />
+            <div className="flex items-center justify-between gap-2 px-3 py-2 text-[12px] text-text-muted">
+                <span>Color del nodo</span>
+                <input
+                    type="color"
+                    value={nodeColor}
+                    onChange={(event) => onChangeColor(event.target.value)}
+                    className="w-8 h-6 bg-transparent border border-border rounded-sm cursor-pointer"
+                />
+            </div>
             {hasImage && (
                 <>
                     <div className="h-px bg-border my-1" />

@@ -5,34 +5,34 @@ export async function exportToPdf(
     element: HTMLElement,
     title: string = 'Diagrama'
 ): Promise<void> {
+    const hiddenSelector =
+        '.react-flow__controls, .react-flow__minimap, .react-flow__attribution, .react-flow__background';
+    const hiddenElements = Array.from(element.querySelectorAll(hiddenSelector)) as HTMLElement[];
+    const previousDisplays = new Map<HTMLElement, string>();
+    const previousBackground = element.style.background;
+
     try {
-        // Hide controls and minimap for clean export
-        const controls = element.querySelectorAll(
-            '.react-flow__controls, .react-flow__minimap'
-        );
-        controls.forEach((el) => {
-            (el as HTMLElement).style.display = 'none';
+        // Hide UI chrome and background pattern to keep export clean and transparent.
+        hiddenElements.forEach((el) => {
+            previousDisplays.set(el, el.style.display);
+            el.style.display = 'none';
         });
+        element.style.background = 'transparent';
 
         const dataUrl = await toPng(element, {
-            backgroundColor: '#0f0f14',
             pixelRatio: 2,
+            backgroundColor: 'transparent',
             filter: (node) => {
-                // Filter out attribution and controls
                 if (node.classList) {
                     return (
                         !node.classList.contains('react-flow__controls') &&
                         !node.classList.contains('react-flow__minimap') &&
-                        !node.classList.contains('react-flow__attribution')
+                        !node.classList.contains('react-flow__attribution') &&
+                        !node.classList.contains('react-flow__background')
                     );
                 }
                 return true;
             },
-        });
-
-        // Restore visibility
-        controls.forEach((el) => {
-            (el as HTMLElement).style.display = '';
         });
 
         const img = new Image();
@@ -59,5 +59,11 @@ export async function exportToPdf(
     } catch (error) {
         console.error('Error exporting to PDF:', error);
         throw error;
+    } finally {
+        hiddenElements.forEach((el) => {
+            const previousDisplay = previousDisplays.get(el);
+            el.style.display = previousDisplay ?? '';
+        });
+        element.style.background = previousBackground;
     }
 }

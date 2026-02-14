@@ -51,3 +51,92 @@
   @apply stroke-accent-secondary stroke-2;
   stroke-dasharray: 6 3;
 }
+
+/* ─── Connection Tool Styling ─── */
+
+/* Handle Visibility Logic */
+.mode-connect .custom-side-handle {
+  visibility: visible !important;
+  opacity: 0.12 !important;
+  background: var(--accent-primary) !important;
+  border: none !important;
+}
+
+/* Default state: hidden side handles */
+.custom-side-handle {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  border: none !important;
+  z-index: 25;
+}
+
+.custom-side-handle--top,
+.custom-side-handle--bottom {
+  width: 60% !important;
+  height: 14px !important;
+  border-radius: 999px !important;
+}
+
+.custom-side-handle--left,
+.custom-side-handle--right {
+  width: 14px !important;
+  height: 60% !important;
+  border-radius: 999px !important;
+}
+
+.custom-side-handle--top {
+  margin-top: -6px !important;
+}
+
+.custom-side-handle--bottom {
+  margin-top: 6px !important;
+}
+
+.custom-side-handle--left {
+  margin-left: -6px !important;
+}
+
+.custom-side-handle--right {
+  margin-left: 6px !important;
+}
+
+/* While NOT connecting (Connect Tool Active, Idle): 
+   Source handle is interactive to START connection. 
+   Target handle is hidden/inactive to prevent interference. */
+.mode-connect:not(.is-connecting) .custom-source-handle {
+  pointer-events: auto !important;
+  cursor: crosshair !important;
+}
+
+.mode-connect:not(.is-connecting) .custom-target-handle {
+  pointer-events: none !important;
+}
+
+/* While CONNECTING (Dragging a wire): 
+   Source handle is disabled (don't start new one). 
+   Target handle is interactive to RECEIVE connection. */
+.mode-connect.is-connecting .custom-source-handle {
+  pointer-events: none !important;
+}
+
+.mode-connect.is-connecting .custom-target-handle {
+  pointer-events: auto !important;
+  cursor: crosshair !important;
+}
+
+/* 
+   Hide default handles in connect mode to avoid confusion.
+   The .react-flow__handle class targets standard handles.
+*/
+.mode-connect .react-flow__handle:not(.custom-side-handle) {
+  pointer-events: none !important;
+  opacity: 0 !important;
+  display: none !important;
+}
+
+/* Visual feedback for Connect Mode */
+.mode-connect .react-flow__node {
+  /* Optional: Show nodes are ready to be connected */
+  cursor: crosshair !important;
+}

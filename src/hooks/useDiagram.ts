@@ -54,6 +54,17 @@ export function useDiagram() {
         [setNodes]
     );
 
+    const updateNodeColor = useCallback(
+        (nodeId: string, color: string) => {
+            setNodes((nds) =>
+                nds.map((node) =>
+                    node.id === nodeId ? { ...node, data: { ...node.data, color } } : node
+                )
+            );
+        },
+        [setNodes]
+    );
+
     // ── Create node factory ──
     const createNode = useCallback(
         (type: string, position: { x: number; y: number }): Node | null => {
@@ -91,6 +102,13 @@ export function useDiagram() {
                         type: 'mindmap',
                         position,
                         data: { ...baseData, variant: 'leaf' },
+                    };
+                case 'title':
+                    return {
+                        id,
+                        type: 'title',
+                        position,
+                        data: { ...baseData, label: 'Titulo' },
                     };
                 default:
                     return null;
@@ -184,6 +202,7 @@ export function useDiagram() {
         onConnect,
         deleteSelected,
         updateNodeLabel,
+        updateNodeColor,
         addImageToNode,
         removeImageFromNode,
 

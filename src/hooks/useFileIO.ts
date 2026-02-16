@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
-import { Node, Edge, ReactFlowInstance } from '@xyflow/react';
+import { useCallback, type MutableRefObject } from 'react';
+import { Edge, Node, ReactFlowInstance, XYPosition } from '@xyflow/react';
+import { exportToPng } from '../utils/exportPng';
 import { exportToPdf } from '../utils/exportPdf';
 import { DiagramType } from '../types';
 
@@ -12,10 +13,26 @@ interface UseFileIOProps {
     setEdges: (edges: Edge[] | ((eds: Edge[]) => Edge[])) => void;
     setDiagramTitle: (title: string) => void;
     setDiagramType: (type: DiagramType) => void;
-    reactFlowInstance: React.MutableRefObject<ReactFlowInstance | null>;
+    reactFlowInstance: MutableRefObject<ReactFlowInstance | null>;
     updateNodeLabel: (id: string, label: string) => void;
-    setContextMenu: (menu: any) => void; // Add this to reset context menu
+    withEditableEdgeData: (edge: Edge) => Edge;
+    setContextMenu: (menu: any) => void;
     setFilePickerNodeId: (id: string | null) => void;
+}
+
+type ExportFormat = 'png' | 'pdf';
+
+function isValidPoint(value: unknown): value is XYPosition {
+    if (!value || typeof value !== 'object') return false;
+    const point = value as Record<string, unknown>;
+    return typeof point.x === 'number' && Number.isFinite(point.x) &&
+        typeof point.y === 'number' && Number.isFinite(point.y);
+}
+
+function extractEdgePoints(edge: Edge): XYPosition[] {
+    const edgeData = (edge.data as Record<string, unknown> | undefined) ?? {};
+    const rawPoints = Array.isArray(edgeData.points) ? edgeData.points : [];
+    return rawPoints.filter(isValidPoint);
 }
 
 export function useFileIO({
@@ -29,38 +46,58 @@ export function useFileIO({
     setDiagramType,
     reactFlowInstance,
     updateNodeLabel,
+    withEditableEdgeData,
     setContextMenu,
-    setFilePickerNodeId
+    setFilePickerNodeId,
 }: UseFileIOProps) {
+    const handleExportAs = useCallback(
+        async (format: ExportFormat) => {
+            const element = document.querySelector('.react-flow') as HTMLElement | null;
+            if (!element) return;
 
-    const handleExportPdf = useCallback(async () => {
-        const el = document.querySelector('.react-flow') as HTMLElement;
-        if (el) {
-            await exportToPdf(el, diagramTitle);
-        }
-    }, [diagramTitle]);
+            const exportOptions = {
+                nodes,
+                edges,
+                reactFlowInstance: reactFlowInstance.current,
+            };
+
+            if (format === 'png') {
+                await exportToPng(element, diagramTitle, exportOptions);
+                return;
+            }
+
+            await exportToPdf(element, diagramTitle, exportOptions);
+        },
+        [diagramTitle, nodes, edges, reactFlowInstance]
+    );
 
     const handleSave = useCallback(() => {
         const data = {
             title: diagramTitle,
             diagramType,
-            nodes: nodes.map((n) => ({
-                id: n.id,
-                type: n.type,
-                position: n.position,
+            nodes: nodes.map((node) => ({
+                id: node.id,
+                type: node.type,
+                position: node.position,
                 data: {
-                    label: (n.data as Record<string, unknown>).label,
-                    variant: (n.data as Record<string, unknown>).variant,
-                    color: (n.data as Record<string, unknown>).color,
-                    image: (n.data as Record<string, unknown>).image,
+                    label: (node.data as Record<string, unknown>).label,
+                    variant: (node.data as Record<string, unknown>).variant,
+                    color: (node.data as Record<string, unknown>).color,
+                    image: (node.data as Record<string, unknown>).image,
                 },
             })),
-            edges: edges.map((e) => ({
-                id: e.id,
-                source: e.source,
-                target: e.target,
-                type: e.type,
-                animated: e.animated,
+            edges: edges.map((edge) => ({
+                id: edge.id,
+                source: edge.source,
+                target: edge.target,
+                sourceHandle: edge.sourceHandle,
+                targetHandle: edge.targetHandle,
+                type: edge.type,
+                animated: edge.animated,
+                markerEnd: edge.markerEnd,
+                data: {
+                    points: extractEdgePoints(edge),
+                },
             })),
         };
 
@@ -68,10 +105,10 @@ export function useFileIO({
             type: 'application/json',
         });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${diagramTitle.replace(/\s+/g, '_')}.json`;
-        a.click();
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = `${diagramTitle.replace(/\s+/g, '_')}.json`;
+        anchor.click();
         URL.revokeObjectURL(url);
     }, [diagramTitle, diagramType, nodes, edges]);
 
@@ -79,14 +116,14 @@ export function useFileIO({
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json';
-        input.onchange = (e) => {
-            const file = (e.target as HTMLInputElement).files?.[0];
+        input.onchange = (event) => {
+            const file = (event.target as HTMLInputElement).files?.[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = (ev) => {
+            reader.onload = (readerEvent) => {
                 try {
-                    const data = JSON.parse(ev.target?.result as string);
+                    const data = JSON.parse(readerEvent.target?.result as string);
                     setDiagramTitle(data.title || 'Mi Diagrama');
                     setDiagramType(data.diagramType || 'concept');
 
@@ -94,21 +131,38 @@ export function useFileIO({
                     const rawEdges = Array.isArray(data.edges) ? data.edges : [];
 
                     const loadedNodes: Node[] = rawNodes
-                        .filter((n: Record<string, unknown>) => n.type !== 'image')
-                        .map((n: Record<string, unknown>) => ({
-                            ...n,
+                        .filter((node: Record<string, unknown>) => node.type !== 'image')
+                        .map((node: Record<string, unknown>) => ({
+                            ...(node as Node),
                             data: {
-                                ...(n.data as Record<string, unknown>),
+                                ...(node.data as Record<string, unknown>),
                                 onLabelChange: updateNodeLabel,
                             },
                         }));
 
-                    const availableIds = new Set(loadedNodes.map((node) => node.id));
-                    const loadedEdges: Edge[] = rawEdges.filter(
-                        (e: Record<string, unknown>) =>
-                            availableIds.has(e.source as string) &&
-                            availableIds.has(e.target as string)
-                    ) as Edge[];
+                    const availableNodeIds = new Set(loadedNodes.map((node) => node.id));
+                    const loadedEdges: Edge[] = rawEdges
+                        .filter(
+                            (edge: Record<string, unknown>) =>
+                                availableNodeIds.has(edge.source as string) &&
+                                availableNodeIds.has(edge.target as string)
+                        )
+                        .map((edge: Record<string, unknown>) => {
+                            const edgeData =
+                                (edge.data as Record<string, unknown> | undefined) ?? {};
+                            const points = Array.isArray(edgeData.points)
+                                ? edgeData.points.filter(isValidPoint)
+                                : [];
+
+                            return withEditableEdgeData({
+                                ...(edge as Edge),
+                                type: 'editable',
+                                data: {
+                                    ...edgeData,
+                                    points,
+                                },
+                            });
+                        });
 
                     setNodes(loadedNodes);
                     setEdges(loadedEdges);
@@ -116,14 +170,22 @@ export function useFileIO({
                     setTimeout(() => {
                         reactFlowInstance.current?.fitView({ padding: 0.2 });
                     }, 100);
-                } catch (err) {
-                    console.error('Error loading diagram:', err);
+                } catch (error) {
+                    console.error('Error loading diagram:', error);
                 }
             };
             reader.readAsText(file);
         };
         input.click();
-    }, [setNodes, setEdges, updateNodeLabel, setDiagramTitle, setDiagramType, reactFlowInstance]);
+    }, [
+        setNodes,
+        setEdges,
+        updateNodeLabel,
+        withEditableEdgeData,
+        setDiagramTitle,
+        setDiagramType,
+        reactFlowInstance,
+    ]);
 
     const handleNewDiagram = useCallback(() => {
         setNodes([]);
@@ -136,7 +198,7 @@ export function useFileIO({
     return {
         handleSave,
         handleLoad,
-        handleExportPdf,
-        handleNewDiagram
+        handleExportAs,
+        handleNewDiagram,
     };
 }

@@ -19,6 +19,7 @@ import '@xyflow/react/dist/style.css';
 import ConceptNode from '../nodes/ConceptNode';
 import MindMapNode from '../nodes/MindMapNode';
 import TitleNode from '../nodes/TitleNode';
+import EditableEdge from '../nodes/EditableEdge';
 
 import { Network } from 'lucide-react';
 
@@ -26,6 +27,10 @@ const nodeTypes = {
     concept: ConceptNode,
     mindmap: MindMapNode,
     title: TitleNode,
+};
+
+const edgeTypes = {
+    editable: EditableEdge,
 };
 
 type DiagramCanvasProps = {
@@ -100,13 +105,15 @@ export default function DiagramCanvas({
                 onConnectStart={onConnectStart}
                 onConnectEnd={onConnectEnd}
                 nodeTypes={nodeTypes}
+                edgeTypes={edgeTypes}
                 fitView
                 snapToGrid
                 snapGrid={[16, 16]}
                 deleteKeyCode={['Backspace', 'Delete']}
                 multiSelectionKeyCode="Shift"
+                elevateEdgesOnSelect
                 defaultEdgeOptions={{
-                    type: 'smoothstep',
+                    type: 'editable',
                     animated: false,
                     style: { strokeWidth: 2 },
                 }}

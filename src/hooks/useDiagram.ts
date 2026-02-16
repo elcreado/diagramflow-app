@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import {
     type Node,
     type Edge,
+    type XYPosition,
     useNodesState,
     useEdgesState,
     addEdge,
@@ -17,6 +18,48 @@ export function useDiagram() {
     const [diagramType, setDiagramType] = useState<DiagramType>('concept');
     const [diagramTitle, setDiagramTitle] = useState('Mi Diagrama');
     const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
+
+    const updateEdgePoints = useCallback(
+        (edgeId: string, points: XYPosition[]) => {
+            setEdges((eds) =>
+                eds.map((edge) =>
+                    edge.id === edgeId
+                        ? {
+                            ...edge,
+                            data: {
+                                ...(edge.data as Record<string, unknown> | undefined),
+                                points,
+                                onPointsChange: updateEdgePoints,
+                            },
+                        }
+                        : edge
+                )
+            );
+        },
+        [setEdges]
+    );
+
+    const withEditableEdgeData = useCallback(
+        (edge: Edge): Edge => {
+            const data = (edge.data as Record<string, unknown> | undefined) ?? {};
+            const points = Array.isArray(data.points) ? (data.points as XYPosition[]) : [];
+
+            return {
+                ...edge,
+                type: 'editable',
+                data: {
+                    ...data,
+                    points,
+                    onPointsChange: updateEdgePoints,
+                },
+                style: {
+                    strokeWidth: 2,
+                    ...(edge.style ?? {}),
+                },
+            };
+        },
+        [updateEdgePoints]
+    );
 
     // ── Node data helpers ──
     const updateNodeLabel = useCallback(
@@ -145,17 +188,15 @@ export function useDiagram() {
         (connection: Connection) => {
             setEdges((eds) =>
                 addEdge(
-                    {
-                        ...connection,
-                        type: 'smoothstep',
+                    withEditableEdgeData({
+                        ...(connection as Edge),
                         animated: diagramType === 'mindmap',
-                        style: { strokeWidth: 2 },
-                    },
+                    }),
                     eds
                 )
             );
         },
-        [setEdges, diagramType]
+        [setEdges, diagramType, withEditableEdgeData]
     );
 
     // ── Delete selected ──
@@ -205,6 +246,8 @@ export function useDiagram() {
         updateNodeColor,
         addImageToNode,
         removeImageFromNode,
+        updateEdgePoints,
+        withEditableEdgeData,
 
         // Zoom
         zoomIn,

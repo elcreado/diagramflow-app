@@ -85,22 +85,6 @@
   border-radius: 999px !important;
 }
 
-.custom-side-handle--top {
-  margin-top: -6px !important;
-}
-
-.custom-side-handle--bottom {
-  margin-top: 6px !important;
-}
-
-.custom-side-handle--left {
-  margin-left: -6px !important;
-}
-
-.custom-side-handle--right {
-  margin-left: 6px !important;
-}
-
 /* While NOT connecting (Connect Tool Active, Idle): 
    Source handle is interactive to START connection. 
    Target handle is hidden/inactive to prevent interference. */

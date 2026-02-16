@@ -23,7 +23,8 @@ function App() {
         reactFlowInstance,
         updateNodeLabel,
         updateNodeColor,
-        addImageToNode, removeImageFromNode
+        addImageToNode, removeImageFromNode,
+        withEditableEdgeData
     } = useDiagram();
 
     const {
@@ -40,10 +41,10 @@ function App() {
     const [activeTool, setActiveTool] = useState<'pointer' | 'connect'>('pointer');
     const [isConnecting, setIsConnecting] = useState(false);
 
-    const { handleSave, handleLoad, handleExportPdf, handleNewDiagram } = useFileIO({
+    const { handleSave, handleLoad, handleExportAs, handleNewDiagram } = useFileIO({
         nodes, edges, diagramTitle, diagramType,
         setNodes, setEdges, setDiagramTitle, setDiagramType,
-        reactFlowInstance, updateNodeLabel, setContextMenu, setFilePickerNodeId
+        reactFlowInstance, updateNodeLabel, withEditableEdgeData, setContextMenu, setFilePickerNodeId
     });
 
     // ── Image Handling ──
@@ -162,7 +163,7 @@ function App() {
                     onDiagramTypeChange={setDiagramType}
                     onAddNode={addNode}
                     onActivateConnectTool={() => setActiveTool('connect')}
-                    onExportPdf={handleExportPdf}
+                    onExportAs={handleExportAs}
                     onNewDiagram={handleNewDiagram}
                     onSave={handleSave}
                     onLoad={handleLoad}
